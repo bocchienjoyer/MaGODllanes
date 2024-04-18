@@ -1,0 +1,183 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+Social Analytics and Strategic Intelligence
+
+Session 1: Explore and Query
+Let’s bring the data in long format (ByYear_LongStats):
+```{r}
+rm(list = ls())
+denguelink1='https://github.com/SocialAnalytics-StrategicIntelligence/TableOperations/raw/main/dataFiles/ByYear_LongStats.pkl'
+
+library(reticulate)
+use_python("C:/Users/jpnav/anaconda3") #debes poner lo mismo pero con la dirección del tuyo, donde esté ubicado tu pandas. Si te sale error con pd <- import("pandas"), en el mensaje saldrá algo tipo "no se encontró C:/Users/jpnav/anaconda3/python311.dll" de eso solo copias y pegas todo menos el /python311.dll. De ahí te debe correr todo normal.
+```
+
+
+```{r}
+#py_install("pandas") # install pandas for R environment
+pd <- import("pandas")
+
+dengueLongStats <- pd$read_pickle(denguelink1)
+
+reticulate::py_last_error()
+
+str(dengueLongStats) 
+```
+  
+  - The average age (mean/median) of infected through the years? by symptoms level?
+
+#Creación de subset para facilitar trabajo  
+```{r}
+datamean <- subset(dengueLongStats, statsName == "edad_mean")
+```
+
+#Gráfico
+```{r}
+library(ggplot2)
+library(dplyr)
+
+last_mean <- datamean %>%
+  group_by(enfermedad) %>%
+  filter(ano == max(ano))
+
+ggplot(data=datamean, aes(x=ano, y=statsValue, color=enfermedad)) +
+  geom_smooth(se=TRUE, method="loess")+
+  scale_y_log10(labels=scales::comma) +
+  scale_color_manual(values=c("SIN_SEÑALES" = "yellow", "ALARMA" = "orange", "GRAVE" = "red")) +
+  theme_light() +
+  labs(title="Edad media del contagiado de dengue (2010-2022)",
+       x="Año",
+       y="Edad Promedio",
+       color="Grado del Dengue")+
+  theme(plot.title = element_text(hjust = 0.4, face="bold", size=18))+
+  geom_text(data=last_mean, aes(label=round(statsValue)), hjust=-0.1, vjust=0.5, color="black", show.legend = FALSE)
+
+```
+La edad media del contagiado de dengue vario a través de los años? Fue lo mismo segun gravedad?
+Respuesta:
+Como se observa en el gráfico, la edad media del contagiado de dengue sí ha ido variando a través de los años. Las variaciones más notorias se dieron en años anteriores al 2010. Este fenómeno puede deberse a que anterior a dicho año la recopilación de datos referente al dengue era más bien pobre. Posterior al mencionado año, la edad promedio de los contagiados no ha variado de forma notoria, siendo los más afectados, al año 2022, los adultos jóvenes en sus 30 tempranos o 20 tardíos en los 3 grados del dengue: sin señal (sin síntomas), en alarma (con síntomas) y graves.
+
+  - The amount of infected through the years? by symptoms level?
+  
+#Creación de subset para facilitar trabajo  
+```{r}
+datacase <- subset(dengueLongStats, statsName == "case_sum")
+```
+
+#Gráfico
+```{r}
+library(ggplot2)
+library(dplyr)
+
+last_values <- datacase %>%
+  group_by(enfermedad) %>%
+  filter(ano == max(ano))
+
+ggplot(data=datacase, aes(x=ano, y=statsValue, color=enfermedad)) +
+  geom_smooth(se=TRUE, method="loess")+
+  scale_y_log10(labels=scales::comma) +
+  scale_color_manual(values=c("SIN_SEÑALES" = "yellow", "ALARMA" = "orange", "GRAVE" = "red")) +
+  theme_light() +
+  labs(title="Número de casos a lo largo del tiempo (2010-2022)",
+       x="Año",
+       y="Número de casos",
+       color="Grado del dengue")+
+  theme(plot.title = element_text(hjust = 0.5, face="bold", size=18))+
+  geom_text(data=last_values, aes(label=statsValue), hjust=-0.1, vjust=0.5, color="black", show.legend = FALSE) +
+  scale_x_continuous(limits = c(min(datacase$ano), max(datacase$ano) + 1.5))
+
+```
+La cantidad de casos  varió a través de los años? Fue lo mismo según gravedad?
+Respuesta:
+Referente a la cantidad de casos, se observa en el gráfico que el dengue de grado alarma (con síntomas) vio un aumento significativo en su número de casos entre los años 2005 y 2015, siendo 7370 casos al año 2022. Pese a ello, el número de estos casos no se compara a la cantidad de casos sin señales (sin síntomas), que al año 2022 se registraban 48625 casos. Aún con ello, este tipo de casos no han variado en demasía a través de los años como sí lo hicieron los casos de alarma. Para añadir, los casos de dengue grave se han mantenido relativamente estables, sin aumentar ni disminuir de forma significativa.  
+
+Most affected provinces through the years?
+
+The data worst_ProvYear_alarma_Frequency tell us the frequency of the worst province by region by year:
+
+```{r}
+denguelink2='https://github.com/SocialAnalytics-StrategicIntelligence/TableOperations/raw/main/dataFiles/worst_ProvYear_alarma_Frequency.csv'
+
+dengueProvWorst <- read.csv(denguelink2)
+
+
+str(dengueProvWorst) 
+```
+
+For instance, LORETO has data for 14 years:
+
+```{r}
+dengueProvWorst[dengueProvWorst$departamento=='LORETO',]
+```
+
+In one year, ALTO AMAZONAS was the worst case of people with alarm situation; while MAYNAS had that position for 13 years.
+
+What is the worst cases?
+
+```{r}
+dengueProvWorst[order(-dengueProvWorst$case),]
+```
+
+We could see the distribution of the worst provinces:
+
+
+```{r}
+library(dplyr)
+
+dengueProvWorst_peor <- dengueProvWorst %>% filter(case >= 10)
+
+baseHeat  = ggplot(dengueProvWorst_peor, aes(x = reorder(departamento,case), y = reorder(provincia,case), fill=case)) + theme_classic()
+heatDefault = baseHeat +  geom_tile()
+
+heatBetter=heatDefault +scale_fill_gradient(low = 'yellow',high = 'black',name="Años con\nmayor cantidad\nde casos")
+heatBetter + theme(axis.text.x = element_text(angle = 60,vjust = 1,hjust = 1, size=5), 
+                   axis.text.y = element_text(size=5),
+                   axis.title.x = element_text(size=10), 
+                   axis.title.y = element_text(size=10)) +
+                   geom_text(aes(label=case),
+                             size=4,fontface='bold', color='white')+
+                   labs(x="Departamento", y="Provincia", title="Peores provincias por año con más casos de dengue")+
+                   theme(plot.title = element_text(hjust = 0.5, face="bold", size=15))
+
+```
+
+Cuales fueron las provincias mas afectadas con contagiados a lo largo de los años?
+
+Respuesta: Como se puede ver en el gráfico, las provincias más afectadas a lo largo de los años han sido las provincias de Maynas y Tambopata, siendo en 13 ocasiones las provincias que más casos de dengue registraron en su departamento. Estas son seguidas de Tumbes y Coronel Portillo. En particular, se observa que estas provincias más afectadas son de la región selva, y si no, de climas sumamente cálidos así como lluviosos. Esto es evidente dada la naturaleza del aedes aegypti, quien se ve favorecido de este tipo de climas. Como conclusión, los departamentos de Madre de Dios y Loreto deben realizar un esfuerzo en la prevención y cuidado del dengue en las provincias de Tambopata y Maynas. En general, todos los departamentos presentes en el gráfico deben de prestar atención y cuidado a las provincias observables, dado que ser por 10 años o más la provincia con mayor cantidad de contagios del dengue no es un asunto menor y denota falta de acción por parte de los gobiernos locales.
+
+Let’ see the info about rateAlarma:
+
+```{r}
+denguelink3='https://raw.githubusercontent.com/SocialAnalytics-StrategicIntelligence/TableOperations/main/dataFiles/ByYearPlace.pkl'
+
+dengueYearPlace <- pd$read_pickle(denguelink3)
+
+str(dengueYearPlace) 
+```
+
+Basic stats:
+
+```{r}
+summary(dengueYearPlace)
+```
+
+Where and when?
+
+```{r}
+baseHeat  = ggplot(dengueYearPlace, aes(x = as.factor(ano),
+                                       y = reorder(departamento, rateAlarma), 
+                                       fill=rateAlarma.cut)) + theme_classic()
+heatDefault = baseHeat +  geom_tile(show.legend = T) 
+
+heatBetter=heatDefault +scale_fill_brewer(palette = "Reds")
+heatBetter + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=8), 
+                   axis.text.y = element_text(size=4),
+                   legend.text = element_text(size=8)) + 
+                   labs(x = "Año", y = "Departamento", fill = "Casos alarmantes", title = "Evolución de los casos alarmantes de dengue por departamento")+
+  theme(plot.title = element_text(hjust = 0.3, face="bold", size=12))
+
+```
+Qué relación habia entre los casos alarmantes no graves y los asintomaticos segun departamento a lo largo de los años?
+Respuesta: Los casos alarmantes no graves a lo largo de los años han ido bajando su porcentaje en proporción al número de casos asintomáticos.
