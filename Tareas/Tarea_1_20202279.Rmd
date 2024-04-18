@@ -11,7 +11,7 @@ rm(list = ls())
 denguelink1='https://github.com/SocialAnalytics-StrategicIntelligence/TableOperations/raw/main/dataFiles/ByYear_LongStats.pkl'
 
 library(reticulate)
-use_python("C:/Users/jpnav/anaconda3") #debes poner lo mismo pero con la dirección del tuyo, donde esté ubicado tu pandas. Si te sale error con pd <- import("pandas"), en el mensaje saldrá algo tipo "no se encontró C:/Users/jpnav/anaconda3/python311.dll" de eso solo copias y pegas todo menos el /python311.dll. De ahí te debe correr todo normal.
+use_python("C:/Users/jpnav/anaconda3") 
 ```
 
 
