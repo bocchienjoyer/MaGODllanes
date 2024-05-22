@@ -13,6 +13,7 @@ obras_riesgo= read.csv(url)
 
 summary(obras_riesgo)
 ```
+
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -45,6 +46,7 @@ ano_ejecu= read.csv(url2, sep = ';')
 
 summary(ano_ejecu)
 ```
+
 ```{r}
 library(ggplot2)
 library(dplyr)
