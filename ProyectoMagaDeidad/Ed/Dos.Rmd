@@ -1,0 +1,97 @@
+---
+title: "inefi_mod_departamento"
+author: "Charles Gabriel Sánchez Salas"
+date: "2024-04-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(reticulate)
+py_config()
+```
+
+```{r}
+library(rio)
+library(ggplot2)
+library(ggcorrplot)
+library(reticulate)
+use_python("C:/Users/USER/OneDrive/Documentos/.virtualenvs/r-reticulate/Scripts/python.exe")
+```
+
+```{r}
+rm(list = ls())
+```
+
+```{r}
+linkobras="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/worst_dep_mod_ult_2.csv"
+```
+
+```{r}
+
+```
+
+```{r}
+pd<-import("pandas")
+```
+
+```{r}
+obrasdf=pd$read_csv(linkobras)
+```
+
+```{r}
+str(obrasdf)
+```
+```{r}
+obrasdf[obrasdf$departamento=="LORETO",]
+```
+```{r}
+obrasdf[order(-obrasdf$casesum),]
+```
+```{r}
+install.packages("extrafont")
+```
+
+
+```{r}
+library(ggplot2)
+library(extrafont)  # Asegúrate de tener este paquete instalado para usar fuentes adicionales
+
+# Cargar las fuentes
+suppressWarnings(loadfonts(device = "win"))  # Si estás en Windows, de lo contrario, usa loadfonts()
+
+# Modificar las etiquetas de las filas
+obrasdf$modalidad_ejecucion <- as.character(obrasdf$modalidad_ejecucion)
+obrasdf$modalidad_ejecucion[obrasdf$modalidad_ejecucion == "Contrata"] <- "Contratación"
+obrasdf$modalidad_ejecucion[obrasdf$modalidad_ejecucion == "Administración directa"] <- "Administración directa"
+
+# Eliminar la última fila
+obrasdf <- obrasdf[obrasdf$modalidad_ejecucion != "Por núcleo ejecutor", ]
+
+# Crear el gráfico base con etiquetas personalizadas en los ejes
+baseHeat = ggplot(obrasdf, aes(x = reorder(departamento, casesum), y = reorder(modalidad_ejecucion, casesum), fill = casesum)) + 
+  theme_classic() +
+  labs(x = "REGIÓN", y = "MODALIDAD DE EJECUCIÓN", fill = "AÑOS") +
+  ggtitle("MODALIDAD MÁS INEFICIENTE SEGÚN REGIÓN") +
+  theme(text = element_text(family = "Arial"),
+        plot.title = element_text(hjust = 0.5))  # Ajuste para centrar el título
+
+# Añadir las geometrías y los estilos de relleno
+heatDefault = baseHeat + geom_tile()
+
+# Ajustar la escala de color y añadir texto en los tiles
+heatBetter = heatDefault + scale_fill_gradient(low = 'yellow', high = 'red') +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8, family = "Arial"),
+        axis.text.y = element_text(size = 10, family = "Arial")) +
+  geom_text(aes(label = ifelse(casesum >= 10, casesum, "")), size = 4, fontface = 'bold', color = 'white')
+
+# Mostrar el gráfico
+suppressWarnings(print(heatBetter))
+
+
+```
+
+

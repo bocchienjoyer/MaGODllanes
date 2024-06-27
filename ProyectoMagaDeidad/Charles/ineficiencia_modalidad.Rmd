@@ -1,0 +1,56 @@
+---
+title: "inefi_mod_departamento"
+author: "Charles Gabriel Sánchez Salas"
+date: "2024-04-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rio)
+library(ggplot2)
+library(ggcorrplot)
+library(reticulate)
+use_python("C:/Users/Charles/anaconda3")
+```
+
+```{r}
+rm(list = ls())
+```
+
+```{r}
+linkobras="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/worst_dep_mod_ult_2.csv"
+```
+
+```{r}
+pd<-import("pandas")
+```
+
+```{r}
+obrasdf=pd$read_csv(linkobras)
+```
+
+```{r}
+str(obrasdf)
+```
+```{r}
+obrasdf[obrasdf$departamento=="LORETO",]
+```
+```{r}
+obrasdf[order(-obrasdf$casesum),]
+```
+```{r}
+baseHeat  = ggplot(obrasdf, aes(x = reorder(departamento,casesum), y = reorder(modalidad_ejecucion,casesum), fill=casesum)) + theme_classic()
+heatDefault = baseHeat +  geom_tile() #here
+
+heatBetter=heatDefault +scale_fill_gradient(low = 'yellow',high = 'orange')
+heatBetter + theme(axis.text.x = element_text(angle = 60,vjust = 1,hjust = 1),
+                   axis.text.y = element_text(size=4)) +
+                   geom_text(aes(label=ifelse(casesum>=10,casesum,"")),
+                             size=6,fontface='bold', color='white')
+```
+
+

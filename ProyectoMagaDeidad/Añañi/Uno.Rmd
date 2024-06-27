@@ -1,0 +1,66 @@
+---
+title: "ineficiencia según modalidad"
+author: "Charles Gabriel Sánchez Salas"
+date: "2024-06-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rio)
+library(ggplot2)
+library(ggcorrplot)
+library(reticulate)
+use_python("C:/Users/USER/OneDrive/Documentos/.virtualenvs/r-reticulate/Scripts/python.exe")
+```
+
+```{r}
+rm(list = ls())
+```
+
+```{r}
+inefilink= "https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/year_mod_obras_long.pkl"
+```
+
+
+```{r}
+pd<-import("pandas")
+```
+
+```{r}
+inefistats<- pd$read_pickle(inefilink)
+```
+
+```{r}
+str(inefistats)
+```
+
+```{r}
+graf1 <- ggplot(data = inefistats,
+                aes(x = ano, y = value, color = modalidad_ejecucion)) + 
+  geom_smooth(se = FALSE, method = "loess") +  # Eliminar el área sombreada detrás de las líneas
+  scale_color_manual(values = c("Administración directa" = "#2ECC71", "Contrata" = "#BB8FCE", "Otros" = "#5DADE2")) + 
+  theme_light() +
+  labs(title = "EVOLUCIÓN DE LA INEFICIENCIA DE LAS OBRAS SEGÚN MODALIDAD",
+       x = "AÑO",
+       y = "PUNTAJE PROMEDIO IRI",  # Nombre del eje y
+       color = "MODALIDAD DE EJECUCIÓN") +
+  scale_y_log10(labels = scales::comma) +
+  theme(axis.title.y = element_text(size = 12),  # Ajustar tamaño del título del eje y
+        plot.title = element_text(hjust = 0.5),  # Centrar el título del gráfico
+        axis.text.x = element_text(size = 10),  # Ajustar tamaño de texto en eje x
+        axis.text.y = element_text(size = 10),  # Ajustar tamaño de texto en eje y
+        axis.title.x = element_text(size = 12),  # Ajustar tamaño de título en eje x
+        legend.title = element_text(size = 12, face = "bold"),  # Ajustar tamaño y estilo de título de leyenda
+        legend.text = element_text(size = 10))  # Ajustar tamaño de texto de leyenda
+
+graf1 +    
+  geom_smooth(se = FALSE) +  # Eliminar el área sombreada detrás de las líneas
+  facet_grid(variable ~ ., scales = 'free_y')
+
+```
+
+
