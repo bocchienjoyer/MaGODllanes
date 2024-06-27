@@ -1,0 +1,71 @@
+---
+title: "Maps"
+author: "Charles Gabriel Sánchez Salas"
+date: "2024-04-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Importar librerias 
+
+```{r}
+library(ggplot2)
+library(rio)
+library(sf)
+```
+# Graficando los departamentos según su grado de acumulación de obras paralizadas
+
+```{r}
+linkdepartamento="https://github.com/Pepix2345/introgeodf/raw/main/maps/Perumap.gpkg"
+```
+
+```{r}
+sf:: st_layers(linkdepartamento)
+```
+```{r}
+peru=read_sf(linkdepartamento, layer="Peruborders")
+```
+
+```{r}
+linkprovincias="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/peru_prov.gpkg"
+```
+
+```{r}
+sf:: st_layers(linkprovincias)
+```
+
+```{r}
+provincias=read_sf(linkprovincias, layer="riesgo")
+```
+
+
+```{r}
+baseprovincia= ggplot(data= peru) + geom_sf(fill= "grey90") + theme_light()
+basefinalrepro= baseprovincia + geom_sf(data= provincias, aes(color=escala))
+basefinalrepro
+```
+```{r}
+linkdepa="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/dep_map.gpkg"
+```
+
+```{r}
+sf:: st_layers(linkdepa)
+```
+
+
+```{r}
+departamento=read_sf(linkdepa, layer="modalidad_xd")
+```
+
+```{r}
+basedepartamento= ggplot(data= peru) + geom_sf(fill= "grey90") + theme_light()
+basefinaldepa= basedepartamento + geom_sf(data= departamento, aes(color=modalidad))
+basefinaldepa
+```
+
+
+
+
