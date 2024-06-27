@@ -1,0 +1,90 @@
+---
+title: "unachiki3"
+author: "Jose Navarro"
+date: "2024-06-20"
+output: html_document
+---
+
+```{r}
+library(reticulate)
+use_python("C:/Users/jpnav/anaconda3") 
+```
+
+```{r}
+pd <- import("pandas")
+
+IRILongStats <- pd$read_pickle("GAAA.pkl")
+
+reticulate::py_last_error()
+
+str(IRILongStats) 
+```
+
+*Primer Gráfico*
+#Creación de subset para facilitar trabajo  
+```{r}
+datacase <- subset(IRILongStats, 
+                   variable == "casesum" & 
+                   modalidad_ejecucion %in% c("Contrata", "Administración directa"))
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Filtrar los datos entre 2006 y 2024
+datacase <- datacase %>%
+  filter(ano >= 2011 & ano <= 2023)
+
+# Obtener los últimos valores registrados
+last_values <- datacase %>%
+  group_by(modalidad_ejecucion) %>%
+  filter(ano == max(ano))
+
+# Crear el gráfico
+ggplot(data=datacase, aes(x=ano, y=value, color=modalidad_ejecucion)) +
+  geom_smooth(se=TRUE, method="loess") +
+  geom_text(data=last_values, aes(label=round(value)), hjust= 0.4, vjust= -3, color="black", show.legend = FALSE) +
+  scale_color_manual(values=c("Administración directa" = "yellow", "Contrata" = "red")) +
+  theme_light() +
+  labs(title="Cantidad de obras a través de los años",
+       x="Año",
+       y="",
+       color="Modalidad de ejecución") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +  # Ajustar el eje y para eliminar valores negativos
+  scale_x_continuous(breaks = seq(2011, 2023, by = 2)) +  # Ajustar el eje x para mostrar todos los años
+  theme(plot.title = element_text(hjust = 1, face="bold", size=18))
+```
+```{r}
+datamean <- subset(IRILongStats, 
+                   variable == "npry_puntajeirimean" & 
+                   modalidad_ejecucion %in% c("Contrata", "Administración directa"))
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+# Filtrar los datos entre 2006 y 2024
+datamean <- datamean %>%
+  filter(ano >= 2006 & ano <= 2024)
+
+last_mean <- datamean %>%
+  group_by(modalidad_ejecucion) %>%
+  filter(ano == max(ano))
+
+ggplot(data=datamean, aes(x=ano, y=value, color=modalidad_ejecucion)) +
+  geom_smooth(se=TRUE, method="loess")+
+  geom_text(data=last_mean, aes(label=round(value)), hjust=-0.1, vjust=0.5, color="black", show.legend = FALSE)+
+  scale_y_log10(labels=scales::comma) +
+  scale_color_manual(values=c("Contrata" = "red", "Administración directa" = "yellow")) +
+  theme_light() +
+  labs(title="IRI promedio de las obras a través de los años",
+       x="Año",
+       y="",
+       color="Modalidad de ejecución")+
+  scale_x_continuous(breaks = seq(2006, 2024, by = 6)) +  # Ajustar el eje x para mostrar todos los años
+  theme(plot.title = element_text(hjust = 0.1, face="bold", size=18))
+```
+
+
+
