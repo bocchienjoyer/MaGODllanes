@@ -1,0 +1,86 @@
+,departamento,CPRY_RANGOINVERSION,casesum
+0,AMAZONAS,< = 1 millón,1
+1,AMAZONAS,> 1 - 5 millón,10
+2,AMAZONAS,> 5 - 10 millones,2
+3,ANCASH,< = 1 millón,3
+4,ANCASH,> 1 - 5 millón,13
+5,APURIMAC,< = 1 millón,3
+6,APURIMAC,> 1 - 5 millón,9
+7,APURIMAC,> 10 - 100 millones,1
+8,APURIMAC,> 5 - 10 millones,2
+9,AREQUIPA,< = 1 millón,1
+10,AREQUIPA,> 1 - 5 millón,11
+11,AREQUIPA,> 10 - 100 millones,2
+12,AYACUCHO,< = 1 millón,5
+13,AYACUCHO,> 1 - 5 millón,3
+14,AYACUCHO,> 10 - 100 millones,3
+15,AYACUCHO,> 5 - 10 millones,3
+16,CAJAMARCA,< = 1 millón,3
+17,CAJAMARCA,> 1 - 5 millón,9
+18,CAJAMARCA,> 10 - 100 millones,2
+19,CUSCO,> 1 - 5 millón,13
+20,CUSCO,> 10 - 100 millones,2
+21,CUSCO,> 5 - 10 millones,1
+22,HUANCAVELICA,< = 1 millón,3
+23,HUANCAVELICA,> 1 - 5 millón,8
+24,HUANCAVELICA,> 10 - 100 millones,1
+25,HUANCAVELICA,> 5 - 10 millones,1
+26,HUANUCO,< = 1 millón,4
+27,HUANUCO,> 1 - 5 millón,7
+28,HUANUCO,> 10 - 100 millones,1
+29,HUANUCO,> 5 - 10 millones,1
+30,ICA,< = 1 millón,5
+31,ICA,> 1 - 5 millón,10
+32,JUNIN,< = 1 millón,5
+33,JUNIN,> 1 - 5 millón,7
+34,JUNIN,> 10 - 100 millones,3
+35,JUNIN,> 5 - 10 millones,1
+36,LA LIBERTAD,< = 1 millón,2
+37,LA LIBERTAD,> 1 - 5 millón,9
+38,LA LIBERTAD,> 5 - 10 millones,3
+39,LAMBAYEQUE,< = 1 millón,4
+40,LAMBAYEQUE,> 1 - 5 millón,6
+41,LAMBAYEQUE,> 10 - 100 millones,2
+42,LAMBAYEQUE,> 5 - 10 millones,1
+43,LIMA,< = 1 millón,6
+44,LIMA,> 1 - 5 millón,10
+45,LIMA,> 10 - 100 millones,1
+46,LIMA,> 5 - 10 millones,1
+47,LORETO,> 1 - 5 millón,6
+48,LORETO,> 10 - 100 millones,3
+49,LORETO,> 5 - 10 millones,4
+50,MADRE DE DIOS,> 1 - 5 millón,4
+51,MADRE DE DIOS,> 10 - 100 millones,8
+52,MADRE DE DIOS,> 5 - 10 millones,1
+53,MOQUEGUA,> 1 - 5 millón,8
+54,MOQUEGUA,> 10 - 100 millones,5
+55,MOQUEGUA,> 5 - 10 millones,2
+56,P C DEL CALLAO,< = 1 millón,3
+57,P C DEL CALLAO,> 1 - 5 millón,5
+58,P C DEL CALLAO,> 10 - 100 millones,4
+59,P C DEL CALLAO,> 5 - 10 millones,1
+60,PASCO,< = 1 millón,2
+61,PASCO,> 1 - 5 millón,9
+62,PASCO,> 10 - 100 millones,1
+63,PASCO,"> 100 - 1,000 millones",1
+64,PASCO,> 5 - 10 millones,1
+65,PIURA,> 1 - 5 millón,10
+66,PIURA,> 10 - 100 millones,1
+67,PIURA,> 5 - 10 millones,2
+68,PUNO,< = 1 millón,6
+69,PUNO,> 1 - 5 millón,7
+70,SAN MARTIN,< = 1 millón,2
+71,SAN MARTIN,> 1 - 5 millón,6
+72,SAN MARTIN,"> 1,000 millones",1
+73,SAN MARTIN,> 10 - 100 millones,4
+74,SAN MARTIN,> 5 - 10 millones,1
+75,TACNA,> 1 - 5 millón,11
+76,TACNA,> 10 - 100 millones,2
+77,TACNA,> 5 - 10 millones,2
+78,TUMBES,< = 1 millón,4
+79,TUMBES,> 1 - 5 millón,9
+80,UCAYALI,< = 1 millón,4
+81,UCAYALI,> 1 - 5 millón,3
+82,UCAYALI,> 10 - 100 millones,1
+83,UCAYALI,"> 100 - 1,000 millones",3
+84,UCAYALI,> 5 - 10 millones,2
