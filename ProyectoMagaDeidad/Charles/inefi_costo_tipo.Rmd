@@ -1,0 +1,93 @@
+---
+title: "ineficiencia_tipo_costo"
+author: "Charles Gabriel Sánchez Salas"
+date: "2024-06-27"
+output: html_document
+---
+
+```{r}
+library(rio)
+library(ggplot2)
+library(ggcorrplot)
+library(reticulate)
+use_python("C:/Users/Charles/anaconda3")
+```
+
+```{r}
+rm(list = ls())
+```
+
+```{r}
+linkinefi="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/costo_inefi_long.pkl"
+```
+
+```{r}
+pd<-import("pandas")
+```
+
+```{r}
+inefistats<- pd$read_pickle(linkinefi)
+```
+
+```{r}
+str(inefistats)
+```
+
+
+```{r}
+graf1= ggplot(data=inefistats,
+               aes(x=ano,y=value,color=CPRY_RANGOINVERSION)) + theme_light() +
+    scale_y_log10(labels=scales::comma)
+graf1 +    
+    geom_smooth()  + 
+    facet_grid(variable~.,scales = 'free_y') 
+```
+
+```{r}
+linkineficosto="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/most_inver_wide_def_def.csv"
+```
+
+
+```{r}
+most_costo<-pd$read_csv(linkineficosto)
+```
+
+```{r}
+str(most_costo)
+```
+
+```{r}
+most_costo[order(-most_costo$casesum),]
+```
+```{r}
+basecosto  = ggplot(most_costo, aes(x = reorder(departamento,casesum), y = reorder(CPRY_RANGOINVERSION,casesum), fill=casesum)) + theme_classic()
+heatDefault = basecosto +  geom_tile() #here
+
+Bettercosto=heatDefault +scale_fill_gradient(low = 'yellow',high = 'orange')
+Bettercosto + theme(axis.text.x = element_text(angle = 60,vjust = 1,hjust = 1),
+                   axis.text.y = element_text(size=4)) +
+                   geom_text(aes(label=ifelse(casesum>=5,casesum,"")),
+                             size=6,fontface='bold', color='white')
+```
+```{r}
+linkinefitipo="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/inefi_worst_tipo_wide_almost_def_def.csv"
+```
+
+```{r}
+inefi_tipo<-pd$read_csv(linkinefitipo)
+```
+
+```{r}
+inefi_tipo[order(-inefi_tipo$casesum),]
+```
+```{r}
+basetipo  = ggplot(inefi_tipo, aes(x = reorder(departamento,casesum), y = reorder(tipo01,casesum), fill=casesum)) + theme_classic()
+heatDefault = basetipo +  geom_tile() #here
+
+Bettertipo=heatDefault +scale_fill_gradient(low = 'yellow',high = 'orange')
+Bettertipo + theme(axis.text.x = element_text(angle = 60,vjust = 1,hjust = 1),
+                   axis.text.y = element_text(size=4)) +
+                   geom_text(aes(label=ifelse(casesum>=5,casesum,"")),
+                             size=6,fontface='bold', color='white')
+```
+
