@@ -13,7 +13,9 @@ use_python("C:/Users/jpnav/anaconda3")
 ```{r}
 pd <- import("pandas")
 
-IRILongStats <- pd$read_pickle("GAAA.pkl")
+url= "https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/GAAA.pkl" 
+  
+IRILongStats <- pd$read_pickle(url)
 
 reticulate::py_last_error()
 
@@ -34,7 +36,7 @@ library(dplyr)
 
 # Filtrar los datos entre 2006 y 2024
 datacase <- datacase %>%
-  filter(ano >= 2011 & ano <= 2023)
+  filter(ano >= 2013 & ano <= 2023)
 
 # Obtener los últimos valores registrados
 last_values <- datacase %>%
