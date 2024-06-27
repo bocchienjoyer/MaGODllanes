@@ -1,0 +1,59 @@
+---
+title: "Wors_provincies"
+author: "Charles Gabriel Sánchez Salas"
+date: "2024-06-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rio)
+library(ggplot2)
+library(ggcorrplot)
+library(reticulate)
+use_python("C:/Users/Charles/anaconda3")
+```
+```{r}
+rm(list = ls())
+```
+
+```{r}
+pd <- import("pandas")
+```
+
+
+```{r}
+ineficiencialink="https://github.com/bocchienjoyer/MaGODllanes/raw/main/ProyectoMagaDeidad/datita/worst_provyear_alto_frec.csv"
+```
+
+
+```{r}
+inefi_worst_prov<-read.csv(ineficiencialink)
+str(inefi_worst_prov)
+```
+```{r}
+inefi_worst_prov[inefi_worst_prov$departamento=="LORETO",]
+```
+```{r}
+inefi_worst_prov[order(-inefi_worst_prov$casesum),]
+```
+```{r}
+baseHeat  = ggplot(inefi_worst_prov, aes(x = reorder(departamento,casesum), y = reorder(provincia,casesum), fill=casesum)) + theme_classic()
+heatDefault = baseHeat +  geom_tile() #here
+
+heatBetter=heatDefault +scale_fill_gradient(low = 'green',high = 'red')
+heatBetter + theme(axis.text.x = element_text(angle = 60,vjust = 1,hjust = 1),
+                   axis.text.y = element_text(size=4)) +
+                   geom_text(aes(label=ifelse(casesum>=10,casesum,"")),
+                             size=6,fontface='bold', color='white')
+```
+
+
+
+
+
+
+
